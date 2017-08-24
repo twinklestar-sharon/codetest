@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="author" content="{{author}}">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS
+  -------------------------------------------------- -->
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/simple-grid.min.css">
+  <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+</head>
+
+
+<style>
+    .hero {
+        padding: 20px;
+    }
+    .row [class^=col] {
+        margin: 2%;
+    }
+    .hero-img {
+        width: 195px;
+        height: 195px;
+    }
+    .hero-text {
+        color: #333333;
+        font-family: Helvetica-Bold;
+        font-size: 0.9em;
+        margin-bottom: 1.25em;
+
+    }
+    ul.hero-product-description {
+        color: #333333;
+        font-size: 0.875em;
+        font-family: Helvetica;
+        list-style-type: circle;
+        margin-left: 1.5em;
+    }
+    .hero-container {
+        border: 1px solid #e2e2e2;
+        margin-bottom: 1.5625em;
+    }
+    .add-to-cart {
+        background-color:#338700;
+        padding: 0.5em 0.8125em;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        color: #FFFFFF;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.875em;
+        font-family: Helvetica;
+    }
+    .item-total {
+        font-size: 1.375em;
+        color: #333333;
+        font-family: Helvetica-Bold;
+    }
+    .sub-img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1.25em;
+    }
+    .item-container-wrap {
+        display: flex;
+        flex-direction: column;
+         margin: 9.042% !important;
+    }
+    .item-text {
+        color: #333333;
+        font-family: Helvetica-Bold;
+        font-size: 0.875em;
+        line-height: 1.5em;
+        margin-bottom: 0.625em;
+        word-break: break-all;
+
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.4em;
+        line-height: 1.8em;
+    }
+    .item-view-more {
+        background-color:#FFFFFF;
+        padding: 0.5em 0.8125em;
+        border: none;
+        width: 100%;
+        color: #0471AF;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.875em;
+        font-family: Helvetica;
+        border: 1px solid #CCCCCC;
+    }
+    .item-price.hero-text {
+        margin-bottom: 1.0416666667em;
+    }
+    .item-col {
+        width: 149.5px;
+        /* margin: 0 1.025em 0 0 !important; */
+        padding-right: 20px;
+        border: 1px solid #ccc; 
+    }
+
+    .top-20 {
+        margin-top: 1.25em;
+    }
+    
+</style>
+
+<style>
+    .flx-c {
+        display: flex;
+        flex-direction: row;
+        margin-left: -20px;
+        margin-top: -20px;
+    }
+    .flx-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        margin-left: 20px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+    }
+    .item-description {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media only screen and (max-width: 45em) { 
+        .flx-c {
+            flex-direction: column;
+        }
+        .flx-item {
+            flex-direction: row;
+        }
+        .item-description {
+            flex-direction: column;
+        }
+    } 
+
+    
+</style>
+
+<div id="root"></div>
+<script type="text/babel">
+
+class ProductItem extends React.Component {
+    render() {
+        let product = this.props.product;
+        let prodDescription = product.brand + " " + product.description;
+        if (prodDescription.length > 70) {
+            prodDescription = prodDescription.substring(0, 70) + '...';
+        }
+        return (
+            <div className="flx-item" onMouseOver={() => this.props.setMastered(product)}>
+                <img className="sub-img center" src={product.imageUrls.sm} />
+                <div className="item-description">
+                    <p className="item-text">{prodDescription}</p>
+                    <p className="item-price hero-text">${product.networkPrice}</p>
+                    <button className="item-view-more">VIEW MORE</button>
+                </div>
+            </div>
+        );
+    }
+}
+
+class HeroComponent extends React.Component {
+    addToCart = () => alert(this.props.product.networkPrice)
+
+    render() {
+        let product = this.props.product;
+        return (
+            <div className="container hero-container">
+                <div className="row">
+                    <div className="col-3 center">
+                        <img className="hero-img" src={product.imageUrls.lg} />
+                    </div>
+                    <div className="col-6" >
+                        <p className="hero-text">{product.brand} {product.description}</p> 
+                        <ul className="hero-product-description">
+                            {product.marketingBullets.map((bullet, i) => 
+                                <li key={i}>{bullet}</li>
+                            )}
+                        </ul>
+                    </div>
+                    <div className="col-3">
+                        <strong className="item-total">${product.networkPrice}</strong>
+                        <button className="add-to-cart" onClick={this.addToCart}>ADD TO CART</button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+class ProductLists extends React.Component {
+    render() {
+        let prodItems = [];
+        prodItems[0] = [];
+        let rowCount = 0;
+        let counter = 0;
+
+        this.props.products.map((product) => {
+            prodItems[rowCount].push(<ProductItem product={product} setMastered={this.props.setMastered}/>);
+            counter++;
+            if (counter == 4) {
+                rowCount++;
+                prodItems[rowCount] = [];
+                counter = 0;
+            }
+        });
+        let isFirstContainer = true;
+        let top20 = '';
+        return (
+            <div>
+            {prodItems.map((rowProduct, k) => {
+                if (isFirstContainer) {
+                    isFirstContainer = false;
+                } else {
+                    top20 = 'top-20';
+                }
+                return (
+                    <div className={"container " + top20} >
+                        <div className="flx-c">
+                            {rowProduct}
+                        </div>
+                    </div>
+                )
+                }
+            )}
+            </div>
+        );
+    }
+}
+
+class ProductsHome extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selected: [],
+            products: [],
+            loading: true,
+        };
+    }
+    componentWillMount() {
+        fetch('/products')  
+            .then(  
+                (response) => {  
+                if (response.status !== 200) {  
+                    console.log('Looks like there was a problem. Status Code: ' +  
+                    response.status);  
+                    return;  
+                }
+
+                // Examine the text in the response  
+                response.json().then((data) => { 
+                    console.log(data.productList[0]);
+                    this.setState({
+                        selected: data.productList[0],
+                        products: data.productList,
+                        loading: false
+                    });  
+                });  
+            }  
+            )  
+            .catch(function(err) {  
+                console.log('Fetch Error :-S', err);  
+            });
+    }
+    render() {
+        if (this.state.loading) {
+            return <strong>Loading Products</strong>
+        }
+        return (
+            <div>
+                <HeroComponent product={this.state.selected} />
+                <ProductLists products={this.state.products} setMastered={this.setMastered}/>
+            </div>
+        );
+    }
+    
+    setMastered = (product) => this.setState({selected: product });
+}
+    ReactDOM.render(
+    <ProductsHome />,
+    document.getElementById('root')
+    );
+
+</script>
